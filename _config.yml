@@ -1,0 +1,52 @@
+# Your presentation title
+title: Presentations
+
+# Your presentation description (optional)
+description: Presentations for courses at Carleton University.
+
+# Your name (optional)
+author: Eric Hobson
+
+# The Reveal theme
+reveal_theme: black.css
+
+# The Reveal transition
+reveal_transition: fade
+
+# Path to the used theme (defaults to the Reveal.js standard theme path)
+reveal_theme_path: reveal.js/dist/theme/ 
+
+# Additional custom CSS paths
+extra_css: 
+
+# Custom CSS for highlighting (defaults to reveal.js/lib/css/zenburn.css)
+highlight_style_sheet: 
+
+# Embed Server-side speaker notes?
+reveal_notes_server: false
+
+# Additional reveal.js options
+reveal_options: 
+
+# Additional reveal.js dependencies
+reveal_dependencies:
+
+# Reveal.js subdirectory
+reveal_path: reveal.js/
+
+collections:
+  slides:
+    output: true
+    permalink: /:title/
+
+# Exclude directories and/or files from the conversion
+exclude:
+  - Gemfile*
+  - LICENSE
+  - README.md
+
+# Don't change anything below
+markdown: kramdown
+highlighter: rouge
+markdown_ext: ignoreme
+

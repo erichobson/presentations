@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+        <title>
+            {% if page.title %}
+                {{ page.title }} | {{ site.title }}
+            {% else %}
+                {{ site.title }}
+            {% endif %}
+        </title>
+
+        <!-- Author -->
+        {% if page.author %}
+            <meta name="author" content="{{ page.author }}" />
+        {% else %}
+            <meta name="author" content="{{ site.title }}" />
+        {% endif %}
+
+        <!-- Description -->
+        {% if page.excerpt %}
+            <meta name="description" content="{{ page.excerpt }}" />
+        {% else %}
+            <meta name="description" content="{{ site.description }}">
+        {% endif %}
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        
+        <link rel="stylesheet" href="{{ site.baseurl }}/{{ site.reveal_path }}dist/reveal.css">
+
+        <!-- Theme -->
+		{% if page.theme %}
+			<link rel="stylesheet" href="{{ page.theme }}" id="theme">
+		{% else %}
+			<link rel="stylesheet" href="{{ site.baseurl }}/{{ site.reveal_theme_path }}{{ site.reveal_theme }}" id="theme">
+		{% endif %}
+
+        <!-- Extra CSS -->
+        {% if site.extra_css %}
+			{% for css_file in site.extra_css %}
+				<link rel="stylesheet" href="{{ site.baseurl }}/{{ css_file }}">
+			{% endfor %}
+		{% endif %}
+
+
+        <!-- Syntax Highlighting -->
+		{% if site.highlight_style_sheet %}
+			{% assign highlight_style_sheet = site.highlight_style_sheet %}
+		{% else %}
+			{% capture highlight_style_sheet %}{{ site.baseurl }}/{{ site.reveal_path }}plugin/highlight/zenburn.css {% endcapture %}
+		{% endif %}
+		<link rel="stylesheet" href="{{ site.baseurl }}/{{ highlight_style_sheet }}">
+
+        
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<div class="slides">
+
+		        <section data-markdown
+                         data-separator="<!--horizontal-->"
+                         data-separator-vertical="<!--vertical-->"
+						 data-notes="^Note:">
+                    <textarea data-template>
+{%
+						assign lines = content | newline_to_br | strip_newlines | split: "<br />"
+%}{%
+						for line in lines
+%}{% 
+							assign processed_line = line
+								| replace:'<fragment/>','<!-- .element: class="fragment" -->'
+								| replace:'<background>','<!-- .slide: data-background="'
+								| replace:'</background>','" -->'
+								| replace:'<backgroundimage>','<!-- .slide: data-background="'
+								| replace:'</backgroundimage>','" --> '
+								| replace:'<backgroundimageopacity>','<!-- .slide: data-background-opacity="'
+								| replace:'</backgroundimageopacity>','" -->'
+                                | replace:'<slide-id>','<!-- .slide: id="'
+                                | replace:'</slide-id>','" --> '
+                                | replace:'<slidevisibility>','<!-- .slide: data-visibility="'
+                                | replace:'</slidevisibility>','" --> '
+                                | replace:'<auto-animate/>','<!-- .slide: data-auto-animate -->'
+%}{%
+							assign first_char = line | strip
+								| slice: 0,1
+%}{%
+							if first_char == '+'
+%}{%
+								assign processed_line = processed_line
+									| replace_first: '+','+ <!-- .element: class="fragment" -->'
+%}{%
+							endif
+							%}{{ processed_line }}{% comment %}Following line break is important{% endcomment %}
+{%
+						endfor
+%}
+                    </textarea>
+				</section>
+			</div>
+		</div>
+        
+        <script src="{{ site.baseurl }}/{{ site.reveal_path }}dist/reveal.js"></script>
+        <script src="{{ site.baseurl }}/{{ site.reveal_path }}plugin/markdown/markdown.js"></script>
+        <script src="{{ site.baseurl }}/{{ site.reveal_path }}plugin/zoom/zoom.js"></script>
+		<script src="{{ site.baseurl }}/{{ site.reveal_path }}plugin/highlight/highlight.js"></script>
+		{% if site.reveal_notes_server %}
+			<script src="{{ site.baseurl }}/{{ site.reveal_path }}socketio/socket.io.js"></script>
+			<!-- The notes server is a stand-alone module and must be separately installed using npm.
+			     See https://github.com/reveal/notes-server for more details. -->
+			<script src="{{ site.baseurl }}/{{ site.reveal_path }}node_modules/reveal-notes-server/client.js"></script>
+		{% else %}
+			<script src="{{ site.baseurl }}/{{ site.reveal_path }}plugin/notes/notes.js"></script>
+		{% endif %}
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+            let r = Reveal();
+            r.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+                theme: r.getQueryHash().theme, // available themes are in /css/theme
+
+                {% if page.transition %}
+                    transition: '{{ page.transition }}',
+                {% else %}
+                    transition: '{{ site.reveal_transition }}', // default/cube/page/concave/zoom/linear/fade/none
+                {% endif %}
+
+				
+                plugins: [ 
+                    RevealMarkdown,
+                    RevealHighlight,
+                    RevealNotes,
+                    RevealZoom,
+                ],
+
+                {% if site.reveal_options %}
+					{% if site.reveal_options.first.first %}
+						// Reveal options generated from mapping
+						{% for option in site.reveal_options %}
+							{{ option[0] }}: "{{ option[1] }}",
+						{% endfor %}
+					{% else %}
+						// Reveal options generated from a list of strings
+						{{ site.reveal_options | append:',' }}
+					{% endif %}
+				{% endif %}
+
+                dependencies: [
+                    {% if site.reveal_dependencies %}
+                        {{ site.reveal_dependencies }}
+					{% endif %}
+                ]
+			});
+
+		</script>
+	</body>
+</html>
